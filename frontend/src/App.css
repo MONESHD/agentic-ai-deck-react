@@ -1,0 +1,129 @@
+.App {
+  text-align: center;
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 24px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.deck-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.deck-form label {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.deck-form input {
+  padding: 8px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+.deck-form button {
+  margin-top: 12px;
+  padding: 10px 0;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.deck-form button:disabled {
+  background: #b3d1ff;
+  cursor: not-allowed;
+}
+.form-error, .error, .download-error {
+  color: #b00020;
+  margin-top: 8px;
+  font-size: 0.98rem;
+}
+.loading {
+  color: #007bff;
+  margin: 16px 0;
+  text-align: center;
+}
+.kpi-results {
+  margin: 32px 0 16px 0;
+  padding: 16px;
+  background: #f7faff;
+  border-radius: 8px;
+}
+.kpi-results table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+}
+.kpi-results th, .kpi-results td {
+  border: 1px solid #dbeafe;
+  padding: 8px;
+  text-align: left;
+}
+.kpi-results th {
+  background: #e0e7ff;
+}
+.download-section {
+  text-align: center;
+  margin-top: 16px;
+}
+.download-section button {
+  padding: 10px 24px;
+  background: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.download-section button:disabled {
+  background: #b7eacb;
+  cursor: not-allowed;
+}
