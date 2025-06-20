@@ -127,3 +127,156 @@ h1 {
   background: #b7eacb;
   cursor: not-allowed;
 }
+
+/* Layout for chat and dashboard */
+.app-layout {
+  display: flex;
+  height: 100vh;
+  background: #f3f6fa;
+}
+
+.chat-panel {
+  width: 380px;
+  background: #fff;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  padding: 0 0 0 0;
+}
+
+.chat-panel h2 {
+  margin: 0;
+  padding: 24px 24px 12px 24px;
+  font-size: 1.3rem;
+  background: #f7faff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.chat-window {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chat-msg {
+  max-width: 80%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  font-size: 1rem;
+  margin-bottom: 2px;
+  word-break: break-word;
+}
+.chat-msg.bot {
+  background: #e0e7ff;
+  align-self: flex-start;
+  color: #222;
+}
+.chat-msg.user {
+  background: #007bff;
+  color: #fff;
+  align-self: flex-end;
+}
+
+.chat-input {
+  display: flex;
+  padding: 16px 24px;
+  border-top: 1px solid #e5e7eb;
+  background: #f7faff;
+}
+.chat-input input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  font-size: 1rem;
+  margin-right: 8px;
+}
+.chat-input button {
+  padding: 10px 18px;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.chat-input button:disabled {
+  background: #b3d1ff;
+  cursor: not-allowed;
+}
+
+.restart-btn {
+  margin: 16px 24px;
+  padding: 10px 0;
+  background: #e0e7ff;
+  color: #222;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.restart-btn:hover {
+  background: #c7d2fe;
+}
+
+.dashboard-panel {
+  flex: 1;
+  padding: 32px 40px;
+  overflow-y: auto;
+  background: #f3f6fa;
+}
+.dashboard-panel h2 {
+  margin-top: 0;
+  margin-bottom: 24px;
+  font-size: 1.3rem;
+}
+
+.error {
+  color: #b00020;
+  margin: 12px 24px 0 24px;
+  font-size: 1rem;
+}
+
+/* Reuse previous styles for KPI and download */
+.kpi-results {
+  margin: 0 0 16px 0;
+  padding: 16px;
+  background: #f7faff;
+  border-radius: 8px;
+}
+.kpi-results table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+}
+.kpi-results th, .kpi-results td {
+  border: 1px solid #dbeafe;
+  padding: 8px;
+  text-align: left;
+}
+.kpi-results th {
+  background: #e0e7ff;
+}
+.download-section {
+  text-align: center;
+  margin-top: 16px;
+}
+.download-section button {
+  padding: 10px 24px;
+  background: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.download-section button:disabled {
+  background: #b7eacb;
+  cursor: not-allowed;
+}
