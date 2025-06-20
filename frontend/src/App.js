@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import KpiResults from './components/KpiResults';
 import DownloadButton from './components/DownloadButton';
+import ChatPage from './components/ChatPage';
 import './App.css';
 
 const questions = [
@@ -26,7 +28,7 @@ const questions = [
   },
 ];
 
-function App() {
+function MainApp() {
   const [answers, setAnswers] = useState({});
   const [currentStep, setCurrentStep] = useState(0);
   const [chat, setChat] = useState([
@@ -37,6 +39,7 @@ function App() {
   const [error, setError] = useState(null);
   const [kpiValues, setKpiValues] = useState(null);
   const [pptxFile, setPptxFile] = useState(null);
+  const [showGptChat, setShowGptChat] = useState(false);
 
   const handleInput = (e) => setInput(e.target.value);
 
@@ -57,7 +60,8 @@ function App() {
         setCurrentStep(currentStep + 1);
       }, 400);
     } else {
-      // All questions answered, call API
+      // All questions answered, show GPT chat immediately
+      setShowGptChat(true);
       setLoading(true);
       setError(null);
       setKpiValues(null);
@@ -99,34 +103,62 @@ function App() {
     setError(null);
     setKpiValues(null);
     setPptxFile(null);
+    setShowGptChat(false);
   };
+
+  // Helper to convert static chat to OpenAI chat format
+  const convertToOpenAIMessages = (staticChat) =>
+    staticChat
+      .filter(msg => msg.sender !== 'bot' || msg.text !== questions[0].text) // skip first bot Q
+      .map(msg => ({
+        role: msg.sender === 'user' ? 'user' : 'assistant',
+        content: msg.text
+      }));
+
+  // Helper to build context string from answers
+  const buildContextString = (answersObj) =>
+    questions
+      .map(q => `${q.text} ${answersObj[q.name] || ''}`)
+      .join('\n');
 
   return (
     <div className="app-layout">
       <div className="chat-panel">
-        <h2>Agentic AI Chat</h2>
-        <div className="chat-window">
-          {chat.map((msg, idx) => (
-            <div key={idx} className={`chat-msg ${msg.sender}`}>{msg.text}</div>
-          ))}
-          {loading && <div className="chat-msg bot">Generating deck...</div>}
-        </div>
-        {error && <div className="error">{error}</div>}
-        {currentStep < questions.length && !loading && (
-          <form className="chat-input" onSubmit={handleSend}>
-            <input
-              type="text"
-              value={input}
-              onChange={handleInput}
-              placeholder="Type your answer..."
-              disabled={loading}
-              autoFocus
-            />
-            <button type="submit" disabled={loading || !input.trim()}>Send</button>
-          </form>
-        )}
-        {(kpiValues || pptxFile) && (
-          <button className="restart-btn" onClick={handleRestart}>Restart</button>
+        {!showGptChat ? (
+          <>
+            <h2>Agentic AI Chat</h2>
+            <div className="chat-window">
+              {chat.map((msg, idx) => (
+                <div key={idx} className={`chat-msg ${msg.sender}`}>{msg.text}</div>
+              ))}
+              {loading && <div className="chat-msg bot">Generating deck...</div>}
+            </div>
+            {error && <div className="error">{error}</div>}
+            {currentStep < questions.length && !loading && (
+              <form className="chat-input" onSubmit={handleSend}>
+                <input
+                  type="text"
+                  value={input}
+                  onChange={handleInput}
+                  placeholder="Type your answer..."
+                  disabled={loading}
+                  autoFocus
+                />
+                <button type="submit" disabled={loading || !input.trim()}>Send</button>
+              </form>
+            )}
+            {(kpiValues || pptxFile) && (
+              <button className="restart-btn" onClick={handleRestart}>Restart</button>
+            )}
+          </>
+        ) : (
+          // Embedded ChatGPT-like chat (no header/back button)
+          <ChatPage
+            embedded
+            initialMessages={convertToOpenAIMessages(chat)}
+            context={buildContextString(answers)}
+            kpi={kpiValues || {}}
+          />
         )}
       </div>
       <div className="dashboard-panel">
@@ -135,6 +167,26 @@ function App() {
         {pptxFile && <DownloadButton pptxFile={pptxFile} />}
       </div>
     </div>
+  );
+}
+
+function GoToChatButton() {
+  const navigate = useNavigate();
+  return (
+    <button className="goto-chat-btn" onClick={() => navigate('/chat')}>
+      Go to ChatGPT-like Chat
+    </button>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<MainApp />} />
+        <Route path="/chat" element={<ChatPage />} />
+      </Routes>
+    </Router>
   );
 }
 

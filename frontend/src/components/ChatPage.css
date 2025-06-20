@@ -1,0 +1,115 @@
+.chatgpt-page-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  background: #f7f7fa;
+}
+
+.chatgpt-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem 1rem 2rem;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.chatgpt-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.back-btn {
+  background: #ececec;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.back-btn:hover {
+  background: #d6d6d6;
+}
+
+.chatgpt-window {
+  flex: 1;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem 0 1rem 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.chatgpt-msg {
+  max-width: 80%;
+  padding: 1rem;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+  word-break: break-word;
+}
+
+.chatgpt-msg.user {
+  align-self: flex-end;
+  background: #d1e7ff;
+  color: #1a2a3a;
+}
+
+.chatgpt-msg.assistant {
+  align-self: flex-start;
+  background: #fff;
+  color: #222;
+  border: 1px solid #e0e0e0;
+}
+
+.chatgpt-input {
+  width: 100%;
+  max-width: 700px;
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem 0 2rem 0;
+  margin: 0 auto;
+}
+
+.chatgpt-input input {
+  flex: 1;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1.1rem;
+  outline: none;
+}
+
+.chatgpt-input button {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0 1.5rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.chatgpt-input button:disabled {
+  background: #b3d1ff;
+  cursor: not-allowed;
+}
+
+.chatgpt-error {
+  color: #d32f2f;
+  background: #fff0f0;
+  border: 1px solid #ffd6d6;
+  padding: 0.7rem 1.2rem;
+  border-radius: 8px;
+  margin: 1rem auto 0 auto;
+  max-width: 700px;
+  text-align: center;
+} 
