@@ -1,7 +1,6 @@
 services:
-  - type: static site
+  - type: static_site
     name: agentic-ai-optimizer-frontend
-    env: static
     rootDir: frontend
     buildCommand: npm install && npm run build
     publishDir: build
