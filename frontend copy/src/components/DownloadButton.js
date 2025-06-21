@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { API_BASE_URL } from './apiConfig';
 
-function DownloadButton() {
+function DownloadButton({ pptxFile }) {
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -9,7 +8,8 @@ function DownloadButton() {
     setDownloading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_BASE_URL}/download_pptx`);
+      const url = `http://127.0.0.1:5000/download_pptx/?pptx_file=${encodeURIComponent(pptxFile)}`;
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error('Failed to download PPTX file');
       }

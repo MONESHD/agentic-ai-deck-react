@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ChatPage.css';
-import { API_BASE_URL } from '../apiConfig';
 
 const SYSTEM_PROMPT = { role: 'system', content: 'You are a helpful assistant.' };
 
@@ -42,7 +41,7 @@ function ChatPage({ embedded, initialMessages, context = '', kpi = {} }) {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_BASE_URL}/chat`, {
+      const response = await fetch('http://127.0.0.1:5000/chat/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ context, kpi, messages: newMessages })

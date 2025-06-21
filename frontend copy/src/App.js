@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-route
 import KpiResults from './components/KpiResults';
 import DownloadButton from './components/DownloadButton';
 import ChatPage from './components/ChatPage';
-import { API_BASE_URL } from './apiConfig';
 import './App.css';
 
 const questions = [
@@ -29,22 +28,6 @@ const questions = [
   },
 ];
 
-function HomePage() {
-  const navigate = useNavigate();
-
-  return (
-    <div className="home-page">
-      <div className="home-content">
-        <h1>Agentic AI Cost Optimization Architect</h1>
-        <p>Talk with our AI Architect to generate a detailed analysis and presentation on optimizing your business processes.</p>
-        <button className="start-btn" onClick={() => navigate('/app')}>
-          Talk Now
-        </button>
-      </div>
-    </div>
-  );
-}
-
 function MainApp() {
   const [answers, setAnswers] = useState({});
   const [currentStep, setCurrentStep] = useState(0);
@@ -55,6 +38,7 @@ function MainApp() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [kpiValues, setKpiValues] = useState(null);
+  const [pptxFile, setPptxFile] = useState(null);
   const [showGptChat, setShowGptChat] = useState(false);
 
   const handleInput = (e) => setInput(e.target.value);
@@ -76,10 +60,12 @@ function MainApp() {
         setCurrentStep(currentStep + 1);
       }, 400);
     } else {
+      // All questions answered, show GPT chat immediately
       setShowGptChat(true);
       setLoading(true);
       setError(null);
       setKpiValues(null);
+      setPptxFile(null);
       const formData = new FormData();
       formData.append('company_industry', newAnswers.company_industry);
       formData.append('use_case_challenge', newAnswers.use_case_challenge);
@@ -87,7 +73,7 @@ function MainApp() {
       formData.append('open_source_vs_comm', newAnswers.open_source_vs_comm);
       formData.append('tasks_to_automate', newAnswers.tasks_to_automate);
       try {
-        const response = await fetch(`${API_BASE_URL}/generate_deck`, {
+        const response = await fetch('http://127.0.0.1:5000/generate_deck/', {
           method: 'POST',
           body: formData,
         });
@@ -97,6 +83,7 @@ function MainApp() {
         }
         const data = await response.json();
         setKpiValues(data.kpi_values);
+        setPptxFile(data.pptx_file);
         setChat((prev) => [
           ...prev,
           { sender: 'bot', text: 'Here are your KPI results and download link!' },
@@ -117,17 +104,20 @@ function MainApp() {
     setLoading(false);
     setError(null);
     setKpiValues(null);
+    setPptxFile(null);
     setShowGptChat(false);
   };
 
+  // Helper to convert static chat to OpenAI chat format
   const convertToOpenAIMessages = (staticChat) =>
     staticChat
-      .filter(msg => msg.sender !== 'bot' || msg.text !== questions[0].text)
+      .filter(msg => msg.sender !== 'bot' || msg.text !== questions[0].text) // skip first bot Q
       .map(msg => ({
         role: msg.sender === 'user' ? 'user' : 'assistant',
         content: msg.text
       }));
 
+  // Helper to build context string from answers
   const buildContextString = (answersObj) =>
     questions
       .map(q => `${q.text} ${answersObj[q.name] || ''}`)
@@ -159,11 +149,12 @@ function MainApp() {
                 <button type="submit" disabled={loading || !input.trim()}>Send</button>
               </form>
             )}
-            {kpiValues && (
+            {(kpiValues || pptxFile) && (
               <button className="restart-btn" onClick={handleRestart}>Restart</button>
             )}
           </>
         ) : (
+          // Embedded ChatGPT-like chat (no header/back button)
           <ChatPage
             embedded
             initialMessages={convertToOpenAIMessages(chat)}
@@ -175,9 +166,18 @@ function MainApp() {
       <div className="dashboard-panel">
         <h2>Dashboard</h2>
         {kpiValues && <KpiResults kpiValues={kpiValues} />}
-        {kpiValues && <DownloadButton />}
+        {pptxFile && <DownloadButton pptxFile={pptxFile} />}
       </div>
     </div>
+  );
+}
+
+function GoToChatButton() {
+  const navigate = useNavigate();
+  return (
+    <button className="goto-chat-btn" onClick={() => navigate('/chat')}>
+      Go to ChatGPT-like Chat
+    </button>
   );
 }
 
@@ -185,8 +185,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/app" element={<MainApp />} />
+        <Route path="/" element={<MainApp />} />
         <Route path="/chat" element={<ChatPage />} />
       </Routes>
     </Router>
