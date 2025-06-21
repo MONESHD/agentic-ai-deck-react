@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './ChatPage.css';
 import { API_BASE_URL } from '../apiConfig';
 
 const SYSTEM_PROMPT = { role: 'system', content: 'You are a helpful assistant.' };
@@ -60,33 +59,76 @@ function ChatPage({ embedded, initialMessages, context = '', kpi = {} }) {
     }
   };
 
-  return (
-    <div className="chatgpt-page-layout">
-      {!embedded && (
-        <div className="chatgpt-header">
-          <h2>ChatGPT-like Assistant</h2>
-          <button className="back-btn" onClick={() => navigate('/')}>Back to Dashboard</button>
-        </div>
-      )}
-      <div className="chatgpt-window">
-        {messages.filter(m => m.role !== 'system').map((msg, idx) => (
-          <div key={idx} className={`chatgpt-msg ${msg.role}`}>{msg.content}</div>
-        ))}
-        {loading && <div className="chatgpt-msg assistant">Thinking...</div>}
-        <div ref={chatEndRef} />
+  const renderMessage = (msg, idx) => {
+    const role = msg.role === 'assistant' ? 'bot' : msg.role;
+    return (
+      <div key={idx} className={`chat-msg ${role}`}>
+        <div className="text">{msg.content}</div>
       </div>
-      {error && <div className="chatgpt-error">{error}</div>}
-      <form className="chatgpt-input" onSubmit={handleSend}>
-        <input
-          type="text"
-          value={input}
-          onChange={handleInput}
-          placeholder="Type your message..."
-          disabled={loading}
-          autoFocus
-        />
-        <button type="submit" disabled={loading || !input.trim()}>Send</button>
-      </form>
+    );
+  };
+
+  if (embedded) {
+    return (
+      <>
+        <h2>Agentic AI Chat</h2>
+        <div className="chat-window">
+          {messages.filter(m => m.role !== 'system').map(renderMessage)}
+          {loading && (
+            <div className="chat-msg bot">
+              <div className="text">Thinking...</div>
+            </div>
+          )}
+          <div ref={chatEndRef} />
+        </div>
+        {error && <div className="error">{error}</div>}
+        <form className="chat-input" onSubmit={handleSend}>
+          <input
+            type="text"
+            value={input}
+            onChange={handleInput}
+            placeholder="Type your message..."
+            disabled={loading}
+            autoFocus
+          />
+          <button type="submit" disabled={loading || !input.trim()}>Send</button>
+        </form>
+      </>
+    );
+  }
+
+  return (
+    <div className="app-layout">
+      <div className="chat-panel">
+        <div className="chat-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h2>ChatGPT-like Assistant</h2>
+          <button className="back-btn" onClick={() => navigate('/')} style={{ marginRight: '20px' }}>Back</button>
+        </div>
+        <div className="chat-window">
+          {messages.filter(m => m.role !== 'system').map(renderMessage)}
+          {loading && (
+            <div className="chat-msg bot">
+              <div className="text">Thinking...</div>
+            </div>
+          )}
+          <div ref={chatEndRef} />
+        </div>
+        {error && <div className="error">{error}</div>}
+        <form className="chat-input" onSubmit={handleSend}>
+          <input
+            type="text"
+            value={input}
+            onChange={handleInput}
+            placeholder="Type your message..."
+            disabled={loading}
+            autoFocus
+          />
+          <button type="submit" disabled={loading || !input.trim()}>Send</button>
+        </form>
+      </div>
+      <div className="dashboard-panel">
+        {/* This is for standalone chat page, can be empty or show something else */}
+      </div>
     </div>
   );
 }

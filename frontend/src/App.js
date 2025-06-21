@@ -5,6 +5,9 @@ import DownloadButton from './components/DownloadButton';
 import ChatPage from './components/ChatPage';
 import { API_BASE_URL } from './apiConfig';
 import './App.css';
+import WorkflowPage from './components/WorkflowPage';
+import ApiWorkflowPage from './components/ApiWorkflowPage';
+import FlowchartGenerator from './components/FlowchartGenerator';
 
 const questions = [
   {
@@ -40,12 +43,16 @@ function HomePage() {
         <button className="start-btn" onClick={() => navigate('/app')}>
           Talk Now
         </button>
+        <button className="start-btn" onClick={() => navigate('/flowchart')}>
+          Generate Flowchart
+        </button>
       </div>
     </div>
   );
 }
 
 function MainApp() {
+  const navigate = useNavigate();
   const [answers, setAnswers] = useState({});
   const [currentStep, setCurrentStep] = useState(0);
   const [chat, setChat] = useState([
@@ -138,12 +145,18 @@ function MainApp() {
       <div className="chat-panel">
         {!showGptChat ? (
           <>
-            <h2>Agentic AI Chat</h2>
+            <h2>Agentic AI Architect</h2>
             <div className="chat-window">
               {chat.map((msg, idx) => (
-                <div key={idx} className={`chat-msg ${msg.sender}`}>{msg.text}</div>
+                <div key={idx} className={`chat-msg ${msg.sender}`}>
+                  <div className="text">{msg.text}</div>
+                </div>
               ))}
-              {loading && <div className="chat-msg bot">Generating deck...</div>}
+              {loading && (
+                <div className="chat-msg bot">
+                  <div className="text">Generating deck...</div>
+                </div>
+              )}
             </div>
             {error && <div className="error">{error}</div>}
             {currentStep < questions.length && !loading && (
@@ -160,7 +173,12 @@ function MainApp() {
               </form>
             )}
             {kpiValues && (
-              <button className="restart-btn" onClick={handleRestart}>Restart</button>
+              <div className="restart-container">
+                <button onClick={handleRestart}>Restart</button>
+              </div>
+            )}
+            {kpiValues && (
+              <KpiResults kpiValues={kpiValues} />
             )}
           </>
         ) : (
@@ -174,8 +192,30 @@ function MainApp() {
       </div>
       <div className="dashboard-panel">
         <h2>Dashboard</h2>
-        {kpiValues && <KpiResults kpiValues={kpiValues} />}
-        {kpiValues && <DownloadButton />}
+        {kpiValues && (
+          <KpiResults
+            kpiValues={kpiValues}
+            questions={questions}
+            answers={answers}
+          />
+        )}
+        {kpiValues && (
+          <div className="buttons-container">
+            <DownloadButton />
+            <button
+              className="flowchart-btn"
+              onClick={() => navigate('/workflow', { state: { answers } })}
+            >
+              Open Here
+            </button>
+            <button
+              className="flowchart-btn"
+              onClick={() => navigate('/api-workflow', { state: { kpiData: kpiValues } })}
+            >
+              View KPI Workflow
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -188,6 +228,9 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/app" element={<MainApp />} />
         <Route path="/chat" element={<ChatPage />} />
+        <Route path="/workflow" element={<WorkflowPage />} />
+        <Route path="/api-workflow" element={<ApiWorkflowPage />} />
+        <Route path="/flowchart" element={<FlowchartGenerator />} />
       </Routes>
     </Router>
   );
